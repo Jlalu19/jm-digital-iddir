@@ -1,26 +1,17 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, 'iddir_db.json');
 
 app.use(express.json());
 
-// ዳታቤዝ መቆጣጠሪያ
-function readDB() {
-    if (!fs.existsSync(DATA_FILE)) {
-        const initialData = { iddirs: {}, members: [], payments: [], assets: [] };
-        fs.writeFileSync(DATA_FILE, JSON.stringify(initialData, null, 2));
-    }
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-}
+// ዳታውን በሰርቨሩ ማህደረ ትውስታ (Memory) ላይ ብቻ መያዝ
+let tempDB = {
+    iddirs: {},
+    members: [],
+    payments: []
+};
 
-function writeDB(data) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-}
-
-// 🌐 ዋናው የተሟላ ገጽ (HTML FRONTEND INTEGRATED)
+// 🌐 ዋናው የተሟላ ገጽ (HTML FRONTEND)
 app.get('/', (req, res) => {
     res.send(`
 <!DOCTYPE html>
@@ -102,7 +93,7 @@ app.get('/', (req, res) => {
                                 </tr>
                             </thead>
                             <tbody id="iddirs-list-table">
-                                <tr><td colspan="5" class="text-muted text-center">እየተጫነ ነው...</td></tr>
+                                <tr><td colspan="5" class="text-muted text-center">ምንም የተፈጠረ እድር የለም! እባክዎ ከላይ ይፍጠሩ።</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -193,7 +184,6 @@ app.get('/', (req, res) => {
                             <td class="text-warning fw-bold">${iddir.monthly_fee || 0} ብር</td>
                         </tr>
                     `;
-                    // አባላት የአድሚኑን መረጃ እንዲያዩ ለመጀመሪያው እድር እንመድበው
                     selectedIddirId = key;
                     document.getElementById('m-display-fee').innerText = iddir.monthly_fee || 0;
                     document.getElementById('m-display-deadline').innerText = iddir.deadline || "ያልተወሰነ";
@@ -210,7 +200,6 @@ app.get('/', (req, res) => {
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('dashboard-box').style.display = 'block';
             
-            // ሁሉንም ክፍሎች መደበቅ
             document.getElementById('superadmin-section').style.display = 'none';
             document.getElementById('admin-section').style.display = 'none';
             document.getElementById('member-section').style.display = 'none';
@@ -248,8 +237,7 @@ app.get('/', (req, res) => {
             });
             const data = await res.json();
             if(data.success) { 
-                alert("🎉 አዲስ እድር በተሳካ ሁኔታ ተፈጥሮ ወደ ዳታቤዝ ተጨምሯል!"); 
-                // ሳጥኖቹን ባዶ ማድረግ
+                alert("🎉 አዲስ እድር በተሳካ ሁኔታ ተፈጥሯል!"); 
                 document.getElementById('id-name').value = "";
                 document.getElementById('id-admin').value = "";
                 document.getElementById('id-phone').value = "";
@@ -290,30 +278,21 @@ app.get('/', (req, res) => {
 });
 
 // APIs
-app.get('/api/get-db', (req, res) => {
-    res.json(readDB());
-});
+app.get('/api/get-db', (req, res) => { res.json(tempDB); });
 
 app.post('/api/superadmin/create-iddir', (req, res) => {
     const { name, admin_name, admin_phone, admin_pass } = req.body;
-    let db = readDB();
     const iddir_id = "iddir_" + Date.now();
-    db.iddirs[iddir_id] = { name, admin_name, admin_phone, admin_pass, monthly_fee: 0, deadline: "ያልተወሰነ", bank_accounts: [] };
-    writeDB(db);
+    tempDB.iddirs[iddir_id] = { name, admin_name, admin_phone, admin_pass, monthly_fee: 0, deadline: "ያልተወሰነ", bank_accounts: [] };
     res.json({ success: true, iddir_id });
 });
 
 app.post('/api/admin/setup-rules', (req, res) => {
     const { iddir_id, monthly_fee, deadline, bank_accounts } = req.body;
-    let db = readDB();
-    if (db.iddirs[iddir_id] || iddir_id === 'iddir_default') {
-        if(!db.iddirs[iddir_id]) {
-            db.iddirs[iddir_id] = { name: "አጠቃላይ እድር", admin_name: "አድሚን", admin_phone: "09", admin_pass: "123" };
-        }
-        db.iddirs[iddir_id].monthly_fee = monthly_fee;
-        db.iddirs[iddir_id].deadline = deadline;
-        db.iddirs[iddir_id].bank_accounts = bank_accounts;
-        writeDB(db);
+    if (tempDB.iddirs[iddir_id]) {
+        tempDB.iddirs[iddir_id].monthly_fee = monthly_fee;
+        tempDB.iddirs[iddir_id].deadline = deadline;
+        tempDB.iddirs[iddir_id].bank_accounts = bank_accounts;
         res.json({ success: true });
     } else { res.status(404).json({ error: "Not found" }); }
 });
