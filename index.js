@@ -85,6 +85,7 @@ app.get('/', (req, res) => {
 
     <div class="container my-4">
         
+        <!-- 📜 የታሪክ ማህደር ክፍል -->
         <div id="culture-box" class="culture-section">
             <h5 class="text-warning fw-bold"><i class="fa-solid fa-book-open"></i> የእድር ታሪካዊ አመጣጥ እና የጉራጌ ባህል እሴት</h5>
             <p class="small text-light mb-0" style="line-height: 1.7; color: #cbd5e1 !important;">
@@ -92,6 +93,7 @@ app.get('/', (req, res) => {
             </p>
         </div>
 
+        <!-- 🔐 የመግቢያ በይነገጽ (SECURE LOGIN) -->
         <div id="login-box" class="card-custom mx-auto" style="max-width: 400px; margin-top: 50px;">
             <h4 class="text-center fw-bold text-warning mb-3"><i class="fa-solid fa-user-shield"></i> ደህንነቱ የተጠበቀ መግቢያ</h4>
             <input type="text" id="login-user" class="form-control form-control-custom" placeholder="ስልክ ቁጥር ወይም 'superadmin'">
@@ -100,8 +102,10 @@ app.get('/', (req, res) => {
             <div class="mt-3 text-center text-muted small">💡 ለሙከራ የይለፍ ቃል ለሁሉም፦ <strong>1234</strong> ነው!</div>
         </div>
 
+        <!-- 📊 ዋናው ማስተር ዳሽቦርድ -->
         <div id="dashboard-box" style="display:none;">
             
+            <!-- 👑 ሀ. የሱፐር አድሚን ገጽ (SUPERADMIN) -->
             <div id="superadmin-section" style="display:none;">
                 <div class="card-custom">
                     <h5 class="text-warning fw-bold mb-3"><i class="fa-solid fa-plus-circle"></i> አዲስ እድር በሲስተሙ ላይ መመዝገቢያ ፎርም</h5>
@@ -121,6 +125,7 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
+            <!-- 🛠️ ለ. የእድር አስተዳዳሪ ገጽ (IDDIR ADMIN) -->
             <div id="admin-section" style="display:none;">
                 <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#adm-m">አባላት መቆጣጠሪያ</button></li>
@@ -187,6 +192,7 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
+            <!-- 👤 ሐ. የተመዘገበ አባል ገጽ (MEMBER DASHBOARD) -->
             <div id="member-section" style="display:none;">
                 <div class="row">
                     <div class="col-md-4">
@@ -266,6 +272,9 @@ app.get('/', (req, res) => {
         let sessionUser = null;
         let selectedIddirId = "iddir_default";
         let localUploadedFileName = "";
+        
+        // 🚨 ቋሚ የ Render ሊንክ አድራሻ (CORS እና HTTPS ስህተትን ለመፍታት)
+        const BASE_URL = window.location.origin;
 
         function mockFileUpload(input) {
             if(input.files && input.files[0]) {
@@ -275,7 +284,7 @@ app.get('/', (req, res) => {
         }
 
         async function refreshData() {
-            const res = await fetch('/api/master-db');
+            const res = await fetch(BASE_URL + '/api/master-db');
             const db = await res.json();
             
             const iddirKeys = Object.keys(db.iddirs);
@@ -331,17 +340,8 @@ app.get('/', (req, res) => {
             const p = document.getElementById('login-pass').value.trim();
             if(!u || !p) { alert("እባክዎ መረጃዎችን በትክክል ያስገቡ!"); return; }
 
-            const res = await fetch('/api/master-db');
+            const res = await fetch(BASE_URL + '/api/master-db');
             const db = await res.json();
-
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('dashboard-box').style.display = 'block';
-            document.getElementById('logout-btn').style.display = 'block';
-            document.getElementById('culture-box').style.display = 'none';
-            
-            document.getElementById('superadmin-section').style.display = 'none';
-            document.getElementById('admin-section').style.display = 'none';
-            document.getElementById('member-section').style.display = 'none';
 
             if(u === 'superadmin' && p === '1234') {
                 sessionUser = { role: 'superadmin' };
@@ -382,6 +382,11 @@ app.get('/', (req, res) => {
                     return;
                 }
             }
+
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('dashboard-box').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'block';
+            document.getElementById('culture-box').style.display = 'none';
             refreshData();
         }
 
@@ -394,6 +399,9 @@ app.get('/', (req, res) => {
             document.getElementById('auth-status').innerHTML = "";
             document.getElementById('login-user').value = "";
             document.getElementById('login-pass').value = "";
+            document.getElementById('superadmin-section').style.display = 'none';
+            document.getElementById('admin-section').style.display = 'none';
+            document.getElementById('member-section').style.display = 'none';
         }
 
         async function superCreateIddir() {
@@ -402,7 +410,7 @@ app.get('/', (req, res) => {
             const phone = document.getElementById('s-id-phone').value;
             const pass = document.getElementById('s-id-pass').value;
             if(!name || !admin || !phone || !pass) { alert("ሁሉንም ይሙሉ"); return; }
-            await fetch('/api/super/create-iddir', {
+            await fetch(BASE_URL + '/api/super/create-iddir', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name, admin, phone, pass })
@@ -416,7 +424,7 @@ app.get('/', (req, res) => {
             const phone = document.getElementById('m-phone').value;
             const pass = document.getElementById('m-pass').value;
             if(!name || !phone || !pass) { alert("ሁሉንም ይሙሉ"); return; }
-            await fetch('/api/admin/create-member', {
+            await fetch(BASE_URL + '/api/admin/create-member', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name, phone, pass, iddir_id: selectedIddirId })
@@ -432,7 +440,7 @@ app.get('/', (req, res) => {
             const b2 = document.getElementById('f-b2').value;
             const rules = document.getElementById('f-rules').value;
             
-            await fetch('/api/admin/save-rules', {
+            await fetch(BASE_URL + '/api/admin/save-rules', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ iddir_id: selectedIddirId, fee, dead, banks: [b1, b2], rules, fileName: localUploadedFileName })
@@ -444,7 +452,7 @@ app.get('/', (req, res) => {
         async function adminPostNotice() {
             const t = document.getElementById('n-title').value;
             const c = document.getElementById('n-content').value;
-            await fetch('/api/admin/post-notice', {
+            await fetch(BASE_URL + '/api/admin/post-notice', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ iddir_id: selectedIddirId, title: t, content: c })
@@ -457,7 +465,7 @@ app.get('/', (req, res) => {
             const amt = document.getElementById('p-amt').value;
             const type = document.getElementById('p-type').value;
             const txn = document.getElementById('p-txn').value;
-            await fetch('/api/member/pay', {
+            await fetch(BASE_URL + '/api/member/pay', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ phone: sessionUser.phone, amt, type, txn })
@@ -469,7 +477,7 @@ app.get('/', (req, res) => {
         async function memberAddFamily() {
             const name = document.getElementById('f-member-name').value;
             if(!name) return;
-            await fetch('/api/member/add-family', {
+            await fetch(BASE_URL + '/api/member/add-family', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ phone: sessionUser.phone, name })
