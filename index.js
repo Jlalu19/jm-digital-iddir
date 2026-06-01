@@ -11,7 +11,7 @@ let masterDB = {
             name: "የጉብሬ አንድነት እድር",
             admin_name: "አቶ በላይነህ",
             admin_phone: "0911000000",
-            admin_pass: "admin123",
+            admin_pass: "1234",
             monthly_fee: 200,
             deadline: "ከየወሩ 1 - 5 ቀን",
             bank_accounts: ["CBE: 1000123456789", "Telebirr: 0911000000"],
@@ -48,8 +48,8 @@ app.get('/', (req, res) => {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { 
-            --bg-main: #0f172a; /* ማራኪ ጥቁር ሰማያዊ ጀርባ */
-            --bg-card: #1e293b; /* የሳጥኖች ቀለም */
+            --bg-main: #0f172a; 
+            --bg-card: #1e293b; 
             --accent: #f59e0b; 
             --accent-hover: #d97706; 
             --text-light: #f8fafc;
@@ -85,23 +85,27 @@ app.get('/', (req, res) => {
 
     <div class="container my-4">
         
-        <div class="culture-section">
+        <!-- 📜 የታሪክ ማህደር ክፍል -->
+        <div id="culture-box" class="culture-section">
             <h5 class="text-warning fw-bold"><i class="fa-solid fa-book-open"></i> የእድር ታሪካዊ አመጣጥ እና የጉራጌ ባህል እሴት</h5>
             <p class="small text-light mb-0" style="line-height: 1.7; color: #cbd5e1 !important;">
                 እድር በኢትዮጵያ ማህበረሰብ ውስጥ ለዘመናት የዘለቀ፣ በችግርም ሆነ በደስታ ጊዜ መረዳጃ ጠንካራ ማህበራዊ ተቋም ነው። ይህ ተቋም በተለይም ከጉራጌ ማህበረሰብ ባህላዊ እሴቶች እና አስተዳደር ስርዓት ጋር ጥልቅ ቁርኝት አለው። በጉራጌ ታሪክ ውስጥ የሚታወቀው የ <strong>የጆቃ ቂጫ (Yejoka Qicha)</strong> የዲሞክራሲያዊ የፍትህ እና የጋራ ውሳኔ መርሆዎች ማህበረሰቡ በሰላም፣ በፍትህ እና በአንድነት እንዲኖር መሰረት የጣለ የህግ ስብስብ ነው። የ JM ዲጂታል እድር ይህንን የቆየ የጋራ መደጋገፍ እና የአንድነት ባህል ከዘመናዊው የቴክኖሎጂ አሰራር ጋር በማዋሃድ፣ ለህዝባችን ፈጣን፣ ግልጽ እና አስተማማኝ አገልግሎት ለማበርከት የተፈጠረ የዘመኑ የዲጂታል ማህበረሰብ ቋት ነው!
             </p>
         </div>
 
+        <!-- 🔐 የመግቢያ በይነገጽ (SECURE LOGIN) -->
         <div id="login-box" class="card-custom mx-auto" style="max-width: 400px; margin-top: 50px;">
             <h4 class="text-center fw-bold text-warning mb-3"><i class="fa-solid fa-user-shield"></i> ደህንነቱ የተጠበቀ መግቢያ</h4>
             <input type="text" id="login-user" class="form-control form-control-custom" placeholder="ስልክ ቁጥር ወይም 'superadmin'">
             <input type="password" id="login-pass" class="form-control form-control-custom" placeholder="የይለፍ ቃል">
             <button onclick="handleLogin()" class="btn btn-premium w-100 py-2 mt-2">ወደ ሲስተሙ ግባ</button>
-            <div class="mt-3 text-center text-muted small">💡 ለሙከራ፦ በ 'superadmin' ወይም በ '0911000000' መግባት ይችላሉ!</div>
+            <div class="mt-3 text-center text-muted small">💡 ለሙከራ የይለፍ ቃል ለሁሉም፦ <strong>1234</strong> ነው!</div>
         </div>
 
+        <!-- 📊 ዋናው ማስተር ዳሽቦርድ -->
         <div id="dashboard-box" style="display:none;">
             
+            <!-- 👑 ሀ. የሱፐር አድሚን ገጽ (SUPERADMIN) -->
             <div id="superadmin-section" style="display:none;">
                 <div class="card-custom">
                     <h5 class="text-warning fw-bold mb-3"><i class="fa-solid fa-plus-circle"></i> አዲስ እድር በሲስተሙ ላይ መመዝገቢያ ፎርም</h5>
@@ -117,10 +121,11 @@ app.get('/', (req, res) => {
                     <h5 class="text-warning fw-bold mb-2"><i class="fa-solid fa-chart-line"></i> አጠቃላይ የሲስተሙ ክትትል ሰሌዳ (Analytics)</h5>
                     <div id="super-stats" class="row text-center my-3"></div>
                     <h5 class="text-warning fw-bold mt-4 mb-2"><i class="fa-solid fa-list"></i> የተመዘገቡ እድሮች አጠቃላይ ዝርዝርና የክትትል ሁኔታ (Status)</h5>
-                    <table class="table table-custom table-bordered"><thead id="s-table-head"></thead><tbody id="super-iddirs-table"></tbody></table>
+                    <table class="table table-custom table-bordered"><thead><tr class="table-dark text-warning"><th>መለያ ID</th><th>የእድር ስም</th><th>ኃላፊ</th><th>ስልክ ቁጥር</th><th>የእድር ሁኔታ (Status)</th></tr></thead><tbody id="super-iddirs-table"></tbody></table>
                 </div>
             </div>
 
+            <!-- 🛠️ ለ. የእድር አስተዳዳሪ ገጽ (IDDIR ADMIN) -->
             <div id="admin-section" style="display:none;">
                 <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#adm-m">አባላት መቆጣጠሪያ</button></li>
@@ -187,6 +192,7 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
+            <!-- 👤 ሐ. የተመዘገበ አባል ገጽ (MEMBER DASHBOARD) -->
             <div id="member-section" style="display:none;">
                 <div class="row">
                     <div class="col-md-4">
@@ -285,7 +291,6 @@ app.get('/', (req, res) => {
             statsHtml += "<div class='col-4'><div class='p-3 bg-dark border rounded'><h4 class='text-info'>" + db.payments.length + "</h4>ክፍያዎች</div></div>";
             
             document.getElementById('super-stats').innerHTML = statsHtml;
-            document.getElementById('s-table-head').innerHTML = "<tr><th>መለያ ID</th><th>የእድር ስም</th><th>ኃላፊ</th><th>ስልክ ቁጥር</th><th>የእድር ሁኔታ (Status)</th></tr>";
             
             let sTable = "";
             iddirKeys.forEach(k => {
@@ -318,7 +323,7 @@ app.get('/', (req, res) => {
                 document.getElementById('m-rules-display').innerText = currentIddir.rules || "ህገ-ደንብ በፅሁፍ አልተጫነም::";
                 
                 if(currentIddir.uploaded_file) {
-                    document.getElementById('m-file-display').innerHTML = "<div class='alert alert-success bg-dark text-white border-success'><i class='fa-solid fa-file-arrow-down text-warning'></i> <strong>የተያያዘ የህገ-ደንብ ፋይል አለ፦</strong> <a href='#' class='text-warning' onclick='alert(\"ፋይሉን ማውረድ ይቻላል! (\")'>" + currentIddir.uploaded_file + "</a></div>";
+                    document.getElementById('m-file-display').innerHTML = "<div class='alert alert-success bg-dark text-white border-success'><i class='fa-solid fa-file-arrow-down text-warning'></i> <strong>የተያያዘ የህገ-ደንብ ፋይል አለ፦</strong> <a href='#' class='text-warning' onclick='alert(\"ፋይሉን ማውረድ ይቻላል!\")'>" + currentIddir.uploaded_file + "</a></div>";
                 } else {
                     document.getElementById('m-file-display').innerHTML = "";
                 }
@@ -327,23 +332,28 @@ app.get('/', (req, res) => {
             }
         }
 
-        function handleLogin() {
+        async function handleLogin() {
             const u = document.getElementById('login-user').value.trim();
             const p = document.getElementById('login-pass').value.trim();
-            if(!u || !p) return;
+            if(!u || !p) { alert("እባክዎ መረጃዎችን በትክክል ያስገቡ!"); return; }
+
+            const res = await fetch('/api/master-db');
+            const db = await res.json();
 
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('dashboard-box').style.display = 'block';
-            document.getElementById('logout-btn').style.display = 'block'; // መውጫ ቁልፍ ማሳያ
+            document.getElementById('logout-btn').style.display = 'block';
+            document.getElementById('culture-box').style.display = 'none'; // የመግቢያ ፅሁፉን ደብቅ
+            
             document.getElementById('superadmin-section').style.display = 'none';
             document.getElementById('admin-section').style.display = 'none';
             document.getElementById('member-section').style.display = 'none';
 
-            if(u === 'superadmin' && p === 'password123') {
+            if(u === 'superadmin' && p === '1234') {
                 sessionUser = { role: 'superadmin' };
                 document.getElementById('auth-status').innerHTML = "<span class='badge bg-danger p-2'><i class='fa-solid fa-user-shield'></i> ሱፐር አድሚን</span>";
                 document.getElementById('superadmin-section').style.display = 'block';
-            } else if(u === '0911000000' && p === 'admin123') {
+            } else if(u === '0911000000' && p === '1234') {
                 sessionUser = { role: 'admin', iddir_id: 'iddir_default' };
                 selectedIddirId = "iddir_default";
                 document.getElementById('auth-status').innerHTML = "<span class='badge bg-warning text-dark p-2'><i class='fa-solid fa-user-gear'></i> እድር አድሚን</span>";
@@ -353,9 +363,32 @@ app.get('/', (req, res) => {
                 document.getElementById('auth-status').innerHTML = "<span class='badge bg-success p-2'><i class='fa-solid fa-user'></i> አባል ገጽ</span>";
                 document.getElementById('member-section').style.display = 'block';
             } else {
-                alert("የተሳሳተ መረጃ ገብቷል!");
-                handleLogout();
-                return;
+                // በሱፐር አድሚን የተመዘገቡ አዳዲስ እድሮችን ቼክ ማድረግ
+                let foundAdminId = null;
+                Object.keys(db.iddirs).forEach(k => {
+                    if(db.iddirs[k].admin_phone === u && db.iddirs[k].admin_pass === p) {
+                        foundAdminId = k;
+                    }
+                });
+
+                // በአድሚን የተመዘገቡ አዳዲስ አባላትን ቼክ ማድረግ
+                let foundMember = db.members.find(m => m.phone === u && m.pass === p);
+
+                if(foundAdminId) {
+                    sessionUser = { role: 'admin', iddir_id: foundAdminId };
+                    selectedIddirId = foundAdminId;
+                    document.getElementById('auth-status').innerHTML = "<span class='badge bg-warning text-dark p-2'><i class='fa-solid fa-user-gear'></i> እድር አድሚን</span>";
+                    document.getElementById('admin-section').style.display = 'block';
+                } else if(foundMember) {
+                    sessionUser = { role: 'member', phone: u };
+                    selectedIddirId = foundMember.iddir_id;
+                    document.getElementById('auth-status').innerHTML = "<span class='badge bg-success p-2'><i class='fa-solid fa-user'></i> አባል ገጽ</span>";
+                    document.getElementById('member-section').style.display = 'block';
+                } else {
+                    alert("የተሳሳተ ስም ወይም የይለፍ ቃል!");
+                    handleLogout();
+                    return;
+                }
             }
             refreshData();
         }
@@ -365,6 +398,7 @@ app.get('/', (req, res) => {
             document.getElementById('login-box').style.display = 'block';
             document.getElementById('dashboard-box').style.display = 'none';
             document.getElementById('logout-btn').style.display = 'none';
+            document.getElementById('culture-box').style.display = 'block';
             document.getElementById('auth-status').innerHTML = "";
             document.getElementById('login-user').value = "";
             document.getElementById('login-pass').value = "";
