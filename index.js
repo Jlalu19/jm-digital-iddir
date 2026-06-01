@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// 🗄️ ማስተር ዳታቤዝ (በማህደረ ትውስታ ላይ በንፅህና የተዋቀረ)
+// 🗄️ ማስተር ዳታቤዝ
 let masterDB = {
     iddirs: {
         "iddir_default": {
@@ -70,6 +70,7 @@ app.get('/', (req, res) => {
 
     <div class="container my-4">
         
+        <!-- 📜 1. የታሪክ ማህደር ክፍል -->
         <div class="culture-section">
             <h5 class="text-warning fw-bold"><i class="fa-solid fa-book-open"></i> የእድር ታሪካዊ አመጣጥ እና የጉራጌ ባህል እሴት</h5>
             <p class="small text-light mb-0" style="line-height: 1.7;">
@@ -77,6 +78,7 @@ app.get('/', (req, res) => {
             </p>
         </div>
 
+        <!-- 🔐 2. የመግቢያ በይነገጽ (SECURE LOGIN) -->
         <div id="login-box" class="card-custom mx-auto" style="max-width: 400px; margin-top: 50px;">
             <h4 class="text-center fw-bold text-warning mb-3"><i class="fa-solid fa-user-shield"></i> ደህንነቱ የተጠበቀ መግቢያ</h4>
             <input type="text" id="login-user" class="form-control form-control-custom" placeholder="ስልክ ቁጥር ወይም 'superadmin'">
@@ -85,8 +87,10 @@ app.get('/', (req, res) => {
             <div class="mt-3 text-center text-muted small">💡 ለሙከራ፦ በ 'superadmin' ወይም በ '0912345678' መግባት ይችላሉ!</div>
         </div>
 
+        <!-- 📊 3. ዋናው ማስተር ዳሽቦርድ -->
         <div id="dashboard-box" style="display:none;">
             
+            <!-- 👑 ሀ. የሱፐር አድሚን ገጽ (SUPERADMIN) -->
             <div id="superadmin-section" style="display:none;">
                 <div class="card-custom">
                     <h5 class="text-warning fw-bold mb-3"><i class="fa-solid fa-plus-circle"></i> አዲስ እድር በሲስተሙ ላይ መመዝገቢያ ፎርም</h5>
@@ -106,6 +110,7 @@ app.get('/', (req, res) => {
                 </div>
             </div>
 
+            <!-- 🛠️ ለ. የእድር አስተዳዳሪ ገጽ (IDDIR ADMIN) -->
             <div id="admin-section" style="display:none;">
                 <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#adm-m">አባላት መቆጣጠሪያ</button></li>
@@ -122,7 +127,7 @@ app.get('/', (req, res) => {
                                 <div class="col-md-4"><input type="text" id="m-phone" class="form-control form-control-custom" placeholder="የስልክ ቁጥር"></div>
                                 <div class="col-md-4"><input type="password" id="m-pass" class="form-control form-control-custom" placeholder="መግቢያ ፓስወርድ"></div>
                             </div>
-                            <button onclick="adminRegisterMember()" class="btn btn-premium mt-2">አባል መዝግብ (SMS ዝግጁ)</button>
+                            <button onclick="adminRegisterMember()" class="btn btn-premium mt-2">አባል መዝግብ</button>
                         </div>
                         <div class="card-custom">
                             <h5 class="text-warning fw-bold mb-2">የእድር አባላት ዝርዝር ሰሌዳ</h5>
@@ -141,7 +146,7 @@ app.get('/', (req, res) => {
                                 <div class="col-md-3"><input type="text" id="f-b1" class="form-control form-control-custom" placeholder="የንግድ ባንክ መረጃ"></div>
                                 <div class="col-md-3"><input type="text" id="f-b2" class="form-control form-control-custom" placeholder="የቴሌብር ቁጥር"></div>
                             </div>
-                            <h5 class="text-warning fw-bold mt-3 mb-2">የእድሩ ቋሚ ህገ-ደንብ (ጽሑፍ ወይም PDF መጫኛ)</h5>
+                            <h5 class="text-warning fw-bold mt-3 mb-2">የእድሩ ቋሚ ህገ-ደንብ</h5>
                             <textarea id="f-rules" class="form-control form-control-custom" rows="3" placeholder="የእድሩን ህግጋት እዚህ ይፃፉ..."></textarea>
                             <button onclick="adminSaveRules()" class="btn btn-premium mt-2">ደንብና የፋይናንስ ህግ አውጣ</button>
                         </div>
@@ -150,7 +155,7 @@ app.get('/', (req, res) => {
                         <div class="card-custom">
                             <h5 class="text-warning fw-bold mb-3">የእድር ንብረቶች መመዝገቢያ ፎርም</h5>
                             <div class="row g-2">
-                                <div class="col-md-6"><input type="text" id="a-name" class="form-control form-control-custom" placeholder="የንብረቱ ስም (ድንኳን፣ ወንበር...)"></div>
+                                <div class="col-md-6"><input type="text" id="a-name" class="form-control form-control-custom" placeholder="የንብረቱ ስም (ድንኳን... )"></div>
                                 <div class="col-md-6"><input type="number" id="a-total" class="form-control form-control-custom" placeholder="አጠቃላይ ብዛት"></div>
                             </div>
                             <button onclick="adminAddAsset()" class="btn btn-premium mt-2">ንብረት መዝግብ</button>
@@ -161,12 +166,13 @@ app.get('/', (req, res) => {
                             <h5 class="text-warning fw-bold mb-3">አዲስ አጠቃላይ ማስታወቂያ ማሰራጫ ሰሌዳ</h5>
                             <input type="text" id="n-title" class="form-control form-control-custom" placeholder="የማስታወቂያው ርዕስ">
                             <textarea id="n-content" class="form-control form-control-custom" rows="3" placeholder="የማስታወቂያው ዝርዝር መልዕክት..."></textarea>
-                            <button onclick="adminPostNotice()" class="btn btn-premium mt-2">ማስታወቂያ በትን (ለአባላት በሙሉ)</button>
+                            <button onclick="adminPostNotice()" class="btn btn-premium mt-2">ማስታወቂያ በትን</button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- 👤 ሐ. የተመዘገበ አባል ገጽ (MEMBER DASHBOARD) -->
             <div id="member-section" style="display:none;">
                 <div class="row">
                     <div class="col-md-4">
@@ -223,13 +229,12 @@ app.get('/', (req, res) => {
                     <div class="tab-pane fade" id="mem-r">
                         <div class="card-custom">
                             <h5 class="text-warning fw-bold mb-2">የእድሩ ቋሚ ህገ-ደንብ ማውጫ ሰሌዳ</h5>
-                            <div id="m-rules-display" class="p-3 bg-dark rounded border text-muted style='white-space: pre-wrap;'"></div>
+                            <div id="m-rules-display" class="p-3 bg-dark rounded border text-muted" style="white-space: pre-wrap;"></div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="mem-l">
                         <div class="card-custom">
                             <h5 class="text-warning fw-bold mb-3">የእድር እቃዎችና ንብረቶች መበደሪያ ጥያቄ ፎርም</h5>
-                            <div class="alert alert-info small">በችግር ጊዜም ሆነ ለደስታ ሰርግ እቃዎችን እዚህ መጠየቅ ይችላሉ::</div>
                             <input type="text" id="l-asset" class="form-control form-control-custom" placeholder="የሚፈልጉት የዕቃ ስም">
                             <input type="number" id="l-qty" class="form-control form-control-custom" placeholder="ብዛት">
                             <button onclick="alert('✅ የእቃ ብድር ጥያቄዎ ለአስተዳዳሪው ተልኳል!')" class="btn btn-premium mt-2">የብድር ጥያቄ አቅርብ</button>
@@ -239,7 +244,7 @@ app.get('/', (req, res) => {
             </div>
 
         </div>
-    </nav>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -250,35 +255,38 @@ app.get('/', (req, res) => {
             const res = await fetch('/api/master-db');
             const db = await res.json();
             
-            // Superadmin Views
             const iddirKeys = Object.keys(db.iddirs);
-            document.getElementById('super-stats').innerHTML = `
-                <div class='col-4'><div class='p-3 bg-dark border rounded'><h4 class='text-warning'>\${iddirKeys.length}</h4>እድሮች</div></div>
-                <div class='col-4'><div class='p-3 bg-dark border rounded'><h4 class='text-success'>\${db.members.length}</h4>አባላት</div></div>
-                <div class='col-4'><div class='p-3 bg-dark border rounded'><h4 class='text-info'>\${db.payments.length}</h4>ክፍያዎች</div></div>
-            `;
+            
+            // የሱፐር አድሚን ቁጥጥር እይታ (እነጠላ ጥቅስ ግጭት የተፈታበት)
+            let statsHtml = "<div class='col-4'><div class='p-3 bg-dark border rounded'><h4 class='text-warning'>" + iddirKeys.length + "</h4>እድሮች</div></div>";
+            statsHtml += "<div class='col-4'><div class='p-3 bg-dark border rounded'><h4 class='text-success'>" + db.members.length + "</h4>አባላት</div></div>";
+            statsHtml += "<div class='col-4'><div class='p-3 bg-dark border rounded'><h4 class='text-info'>" + db.payments.length + "</h4>ክፍያዎች</div></div>";
+            
+            document.getElementById('super-stats').innerHTML = statsHtml;
             document.getElementById('s-table-head').innerHTML = "<tr><th>መለያ ID</th><th>የእድር ስም</th><th>ኃላፊ</th><th>ስልክ ቁጥር</th></tr>";
+            
             let sTable = "";
             iddirKeys.forEach(k => {
-                sTable += `<tr><td>\${k}</td><td>\${db.iddirs[k].name}</td><td>\${db.iddirs[k].admin_name}</td><td>\${db.iddirs[k].admin_phone}</td></tr>`;
+                sTable += "<tr><td>" + k + "</td><td>" + db.iddirs[k].name + "</td><td>" + db.iddirs[k].admin_name + "</td><td>" + db.iddirs[k].admin_phone + "</td></tr>";
             });
             document.getElementById('super-iddirs-table').innerHTML = sTable;
 
-            // Admin Views
             let currentIddir = db.iddirs[selectedIddirId] || db.iddirs["iddir_default"];
             let mTable = "";
             db.members.filter(m => m.iddir_id === selectedIddirId).forEach(m => {
-                mTable += `<tr><td>\${m.id}</td><td>\${m.name}</td><td>\${m.phone}</td><td>\${m.family.join(', ') || 'የለም'}</td><td>\${m.saving} ብር</td></tr>`;
+                let fams = m.family.join(', ') || 'የለም';
+                mTable += "<tr><td>" + m.id + "</td><td>" + m.name + "</td><td>" + m.phone + "</td><td>" + fams + "</td><td>" + m.saving + " ብር</td></tr>";
             });
             document.getElementById('adm-members-table').innerHTML = mTable;
 
-            // Member Views
             if(sessionUser && sessionUser.role === 'member') {
                 const me = db.members.find(m => m.phone === sessionUser.phone);
                 if(me) {
                     document.getElementById('m-view-saving').innerText = me.saving + " ብር";
                     let fList = "";
-                    me.family.forEach(f => fList += `<li class='list-group-item bg-transparent text-white border-secondary'>• \${f}</li>`);
+                    me.family.forEach(f => {
+                        fList += "<li class='list-group-item bg-transparent text-white border-secondary'>• " + f + "</li>";
+                    });
                     document.getElementById('m-family-list').innerHTML = fList;
                 }
                 document.getElementById('m-disp-fee').innerText = currentIddir.monthly_fee || 0;
@@ -327,6 +335,7 @@ app.get('/', (req, res) => {
             const admin = document.getElementById('s-id-admin').value;
             const phone = document.getElementById('s-id-phone').value;
             const pass = document.getElementById('s-id-pass').value;
+            if(!name || !admin || !phone || !pass) { alert("ሁሉንም ይሙሉ"); return; }
             await fetch('/api/super/create-iddir', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -340,12 +349,13 @@ app.get('/', (req, res) => {
             const name = document.getElementById('m-name').value;
             const phone = document.getElementById('m-phone').value;
             const pass = document.getElementById('m-pass').value;
+            if(!name || !phone || !pass) { alert("ሁሉንም ይሙሉ"); return; }
             await fetch('/api/admin/create-member', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name, phone, pass, iddir_id: selectedIddirId })
             });
-            alert("🎉 አዲስ አባል ተመዝግቧል! (የማረጋገጫ SMS ወደ " + phone + " ተልኳል - Mock)");
+            alert("🎉 አዲስ አባል ተመዝግቧል!");
             refreshData();
         }
 
@@ -385,18 +395,20 @@ app.get('/', (req, res) => {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ phone: sessionUser.phone, amt, type, txn })
             });
-            alert("✅ የ " + type + " የክፍያ ፎርም ለቦርድ ቀርቧል! ሲረጋገጥ በ SMS ይደርስዎታል::");
+            alert("✅ የ " + type + " የክፍያ ፎርም ለቦርድ ቀርቧል!");
             refreshData();
         }
 
         async function memberAddFamily() {
             const name = document.getElementById('f-member-name').value;
+            if(!name) return;
             await fetch('/api/member/add-family', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ phone: sessionUser.phone, name })
             });
             alert("✅ የቤተሰብ አባል ታክሏል!");
+            document.getElementById('f-member-name').value = "";
             refreshData();
         }
     </script>
